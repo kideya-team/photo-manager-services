@@ -26,6 +26,8 @@
         <module>photo-catcher-service</module>
         <module>photo-provider-service</module>
         <module>photo-settings-service</module>
+        <module>hdd-service</module>
+        <module>photo-manager-bot</module>
     </modules>
 
     <dependencies>
