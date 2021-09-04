@@ -1,9 +1,10 @@
 package com.kideya.photocatcherservice.repository;
 
 import com.kideya.photocatcherservice.model.Image;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface ImageRepository {
-    public List<Image> getAllImages();
+public interface ImageRepository extends MongoRepository<Image, String> {
+    List<Image> findByGroupId(int groupId);
 }
