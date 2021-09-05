@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,15 +25,15 @@ class ProviderServiceImplTest {
 
     private ProviderService providerService;
 
-    private Image createImage(String imageId, int userId, int groupId, List<ImageTag> imageTags, LocalDateTime date) {
+    private Image createImage(String imageId, int userId, int groupId, List<ImageTag> imageTags, LocalDate date) {
         return new Image(imageId, userId, groupId, imageTags, date);
     }
 
     @BeforeEach
     void setUp() {
-        Image image1 = createImage("image1", 1, 2, List.of(new ImageTag("tag1")), LocalDateTime.of(2021, 1, 1, 1, 1));
-        Image image2 = createImage("image2", 1, 2, List.of(), LocalDateTime.of(2019, 1, 1, 1, 1));
-        Image image3 = createImage("image3", 1, 3, List.of(), LocalDateTime.of(2021, 2, 1, 1, 1));
+        Image image1 = createImage("image1", 1, 2, List.of(new ImageTag("tag1")), LocalDate.of(2021, 1, 1));
+        Image image2 = createImage("image2", 1, 2, List.of(), LocalDate.of(2019, 1, 1));
+        Image image3 = createImage("image3", 1, 3, List.of(), LocalDate.of(2021, 2, 1));
 
         Mockito.when(imageRepository.findByUserId(Mockito.eq(1))).thenReturn(List.of(image1, image2, image3));
 
@@ -57,7 +57,7 @@ class ProviderServiceImplTest {
 
     @Test
     void findByDate() {
-        ByDateFinder byDateFinder = new ByDateFinder(1, LocalDateTime.of(2020, 1, 1, 1, 1), LocalDateTime.now());
+        ByDateFinder byDateFinder = new ByDateFinder(1, LocalDate.of(2020, 1, 1), LocalDate.now());
 
         assertEquals(2, providerService.find(byDateFinder).size());
     }

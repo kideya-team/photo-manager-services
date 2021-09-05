@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -26,8 +25,9 @@ public class CatcherController {
     @GetMapping("/add")
     public String addImage() {
 
-        Image image = new Image("testImageId1", 1, 12, List.of(new ImageTag("testValue")), LocalDateTime.now());
+        Image image = new Image("testImageId1", 1, 12, List.of(new ImageTag("testValue")), LocalDate.now());
         imageRepository.insert(image);
         return "Added";
     }
 }
+

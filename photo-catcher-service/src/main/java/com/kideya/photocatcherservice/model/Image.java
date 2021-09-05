@@ -3,8 +3,7 @@ package com.kideya.photocatcherservice.model;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -18,9 +17,9 @@ public class Image {
     private int userId;
     private int groupId;
     private List<ImageTag> tags;
-    private LocalDateTime date;
+    private LocalDate date;
 
-    public Image(String imageId, int userId, int groupId, List<ImageTag> tags, LocalDateTime date) {
+    public Image(String imageId, int userId, int groupId, List<ImageTag> tags, LocalDate date) {
         this.id = imageId;
         this.userId = userId;
         this.groupId = groupId;

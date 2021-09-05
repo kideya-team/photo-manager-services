@@ -4,15 +4,15 @@ import com.kideya.photocatcherservice.model.Image;
 import com.kideya.photocatcherservice.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class ByDateFinder implements PhotoFinder {
     private final int userId;
-    private final LocalDateTime fromDate;
-    private final LocalDateTime toDate;
+    private final LocalDate fromDate;
+    private final LocalDate toDate;
 
     @Override
     public List<Image> find(ImageRepository imageRepository) {

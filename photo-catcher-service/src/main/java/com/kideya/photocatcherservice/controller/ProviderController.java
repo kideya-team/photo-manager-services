@@ -10,9 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/provider")
@@ -41,10 +40,10 @@ public class ProviderController {
 
     @GetMapping("/{userId}/byDate")
     public List<Image> getByDate(@PathVariable int userId,
-                                 @RequestParam(name="fromDate") @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate,
-                                 @RequestParam(name="toDate", required=false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate) {
+                                 @RequestParam(name="fromDate") @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) LocalDate fromDate,
+                                 @RequestParam(name="toDate", required=false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) LocalDate toDate) {
         if (toDate == null) {
-            toDate = LocalDateTime.now();
+            toDate = LocalDate.now();
         }
 
         ByDateFinder byDateFinder = new ByDateFinder(userId, fromDate, toDate);
