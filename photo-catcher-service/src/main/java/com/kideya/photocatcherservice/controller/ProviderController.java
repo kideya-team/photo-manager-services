@@ -3,10 +3,7 @@ package com.kideya.photocatcherservice.controller;
 import com.kideya.photocatcherservice.model.Image;
 import com.kideya.photocatcherservice.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +11,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("api/provider")
 public class ProviderController {
+
     @Autowired
     private ImageRepository imageRepository;
 
@@ -22,13 +20,13 @@ public class ProviderController {
         return "Hello";
     }
 
-    @GetMapping("/getAll")
-    public List<Image> getAllImages() {
-        return imageRepository.findAll();
+    @GetMapping("/{userId}")
+    public List<Image> getAllImages(@PathVariable int userId) {
+        return imageRepository.findByUserId(userId);
     }
 
-    @GetMapping("/getByUserId/{id}")
-    public List<Image> getByGroupId(@PathVariable int id) {
-        return imageRepository.findByUserId(id);
+    @GetMapping("/{userId}/byGroupId")
+    public List<Image> getByGroupId(@PathVariable int userId, @RequestParam(name="groupId") int groupId) {
+        return imageRepository.findByUserId(userId);
     }
 }
