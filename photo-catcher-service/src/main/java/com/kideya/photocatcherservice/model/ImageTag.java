@@ -1,22 +1,15 @@
 package com.kideya.photocatcherservice.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotNull;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class ImageTag {
-    @Id
-    private String id;
-
-    public String value;
-
-    public ImageTag() {
-
-    }
+    private String value;
 
     public ImageTag(String value) {
         this.value = value;

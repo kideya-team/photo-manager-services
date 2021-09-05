@@ -1,27 +1,24 @@
 package com.kideya.photocatcherservice.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class Image {
     @Id
-    public String id;
+    private String id;
 
-    public int userId;
-    public int groupId;
-    public List<ImageTag> tags;
-    public LocalDateTime date;
-
-    public Image() {
-
-    }
+    private int userId;
+    private int groupId;
+    private List<ImageTag> tags;
+    private LocalDateTime date;
 
     public Image(String imageId, int userId, int groupId, List<ImageTag> tags, LocalDateTime date) {
         this.id = imageId;
