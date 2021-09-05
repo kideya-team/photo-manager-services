@@ -27,8 +27,8 @@ public class ProviderController {
         return imageRepository.findAll();
     }
 
-    @GetMapping("/getByGroupId/{id}")
+    @GetMapping("/getByUserId/{id}")
     public List<Image> getByGroupId(@PathVariable int id) {
-        return imageRepository.findByGroupId(id);
+        return imageRepository.findByUserId(id);
     }
 }
