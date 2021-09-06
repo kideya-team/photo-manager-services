@@ -4,9 +4,10 @@ import lombok.*;
 
 @Setter
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class GroupSettings {
-    private int groupId;
+    private long groupId;
     private String groupName;
 
     private boolean isActive;
