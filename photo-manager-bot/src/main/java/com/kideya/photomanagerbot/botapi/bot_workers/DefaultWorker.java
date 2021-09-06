@@ -1,7 +1,7 @@
 package com.kideya.photomanagerbot.botapi.bot_workers;
 
 import com.kideya.photomanagerbot.botapi.commands.BotCommand;
-import com.kideya.photomanagerbot.services.MessageService;
+import com.kideya.photomanagerbot.services.TextMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,7 +16,7 @@ public class DefaultWorker implements Worker {
     private List<BotCommand> commands;
 
     @Autowired
-    private MessageService messageService;
+    private TextMessageService textMessageService;
 
     @Override
     public SendMessage doWork(Update update) {
@@ -29,7 +29,7 @@ public class DefaultWorker implements Worker {
                 .ifPresent(BotCommand::runCommand);
 
 
-        return messageService.getMessage(update.getMessage().getChatId(), "reply.startMessage");
+        return textMessageService.getMessage(update.getMessage().getChatId(), "reply.startMessage");
     }
 
     @Override

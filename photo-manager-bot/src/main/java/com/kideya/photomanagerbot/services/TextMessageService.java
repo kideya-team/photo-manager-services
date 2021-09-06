@@ -8,12 +8,12 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import java.util.Locale;
 
 @Service
-public class MessageService {
+public class TextMessageService {
 
     private final Locale locale;
     private final MessageSource messageSource;
 
-    public MessageService(@Value("${localeTag}") String localeTag, MessageSource messageSource) {
+    public TextMessageService(@Value("${localeTag}") String localeTag, MessageSource messageSource) {
         this.messageSource = messageSource;
         this.locale = Locale.forLanguageTag(localeTag);
     }
