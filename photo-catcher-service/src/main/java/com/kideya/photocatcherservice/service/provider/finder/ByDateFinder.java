@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class ByDateFinder implements PhotoFinder {
-    private final int userId;
+    private final List<Long> groupIds;
     private final LocalDate fromDate;
     private final LocalDate toDate;
 
@@ -20,8 +20,9 @@ public class ByDateFinder implements PhotoFinder {
             throw new IllegalArgumentException();
         }
 
-        return imageRepository.findByUserId(userId).stream()
-            .filter(image -> image.getDate().isAfter(fromDate) && image.getDate().isBefore(toDate))
-            .collect(Collectors.toList());
+        return groupIds.stream()
+                .flatMap(groupId -> imageRepository.findByGroupId(groupId).stream())
+                .filter(image -> image.getDate().isAfter(fromDate) && image.getDate().isBefore(toDate))
+                .collect(Collectors.toList());
     }
 }

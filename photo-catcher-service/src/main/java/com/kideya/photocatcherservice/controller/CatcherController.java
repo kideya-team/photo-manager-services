@@ -24,8 +24,7 @@ public class CatcherController {
 
     @GetMapping("/add")
     public String addImage() {
-
-        Image image = new Image("testImageId1", 1, 12, List.of(new ImageTag("testValue")), LocalDate.now());
+        Image image = Image.builder().id("imageId").userId(3L).groupId(4L).tags(List.of(new ImageTag("tagg"))).date(LocalDate.now()).build();
         imageRepository.insert(image);
         return "Added";
     }
