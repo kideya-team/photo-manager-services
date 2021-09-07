@@ -12,15 +12,14 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Image {
-    @Id
     private String id;
 
     private int userId;
-    private int groupId;
+    private long groupId;
     private List<ImageTag> tags;
     private LocalDate date;
 
-    public Image(String imageId, int userId, int groupId, List<ImageTag> tags, LocalDate date) {
+    public Image(String imageId, int userId, long groupId, List<ImageTag> tags, LocalDate date) {
         this.id = imageId;
         this.userId = userId;
         this.groupId = groupId;

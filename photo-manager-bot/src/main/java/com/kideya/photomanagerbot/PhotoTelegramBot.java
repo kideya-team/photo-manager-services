@@ -30,11 +30,7 @@ public class PhotoTelegramBot extends TelegramWebhookBot {
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
         System.out.println("UPDATE RECEIVED!!");
 
-        if (update.getMessage() != null) {
-            return facade.handleUpdate(update);
-        }
-
-        return new AnswerCallbackQuery();
+        return facade.handleUpdate(update);
     }
 
 }

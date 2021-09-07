@@ -1,13 +1,16 @@
 package com.kideya.photomanagerbot.botapi.bot_workers;
 
 import com.kideya.photomanagerbot.botapi.commands.BotCommand;
-import com.kideya.photomanagerbot.services.TextMessageService;
+import com.kideya.photomanagerbot.services.TextService;
+import com.kideya.photomanagerbot.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class DefaultWorker implements Worker {
@@ -16,24 +19,36 @@ public class DefaultWorker implements Worker {
     private List<BotCommand> commands;
 
     @Autowired
-    private TextMessageService textMessageService;
+    private TextService textService;
 
     @Override
-    public SendMessage doWork(Update update) {
+    public BotApiMethod<?> doWork(Update update) {
+
+        if (update.hasCallbackQuery()) {
+            return  textService.getMessage(Utils.getChatId(update), "reply.startMessage");
+        }
 
         String text = update.getMessage().getText();
 
-        commands.stream()
+        Optional<BotCommand> currentCommand = commands.stream()
                 .filter(botCommand -> botCommand.getCommandName().equals(text))
-                .findFirst()
-                .ifPresent(BotCommand::runCommand);
+                .findFirst();
 
+        if (currentCommand.isPresent()) {
+            return currentCommand.get().runCommand(update);
+        }
 
-        return textMessageService.getMessage(update.getMessage().getChatId(), "reply.startMessage");
+        return textService.getMessage(Utils.getChatId(update), "reply.startMessage", allMethods());
     }
 
     @Override
-    public boolean isStillWorking() {
+    public boolean isStillWorking(Integer userId) {
         return true;
+    }
+
+    private String allMethods() {
+        return commands.stream()
+                .map(BotCommand::getCommandName)
+                .collect(Collectors.joining("\n"));
     }
 }

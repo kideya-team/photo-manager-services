@@ -5,10 +5,10 @@ import com.kideya.photomanagerbot.services.SendingMessageService;
 import com.kideya.photomanagerbot.utils.MicroservicesNames;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,10 +25,10 @@ public class GroupImageProcessor implements ImageProcessor{
         if (photo != null) {
 
             Image image = prepareImage(message, message.getChatId(), message.getFrom().getId());
-            sendingMessageService.send(MicroservicesNames.CATCHER_SERVICE_NAME, "/api/catcher/add", image);
+            sendingMessageService.sendPost(MicroservicesNames.CATCHER_SERVICE_NAME, "/api/catcher/add", image);
 
         }
-        return null;
+        return new AnswerCallbackQuery();
     }
 
     private Image prepareImage(Message message, long groupId, int userId) {
@@ -39,7 +39,7 @@ public class GroupImageProcessor implements ImageProcessor{
 
         return Image.builder()
                  .id(photo.getFileId())
-                 .groupId((int) groupId) ///TODO fix this cast
+                 .groupId(groupId)
                  .userId(userId)
                  .date(LocalDate.now()).build();
     }
