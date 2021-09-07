@@ -17,9 +17,9 @@ public class SettingsController {
     @Autowired
     private SettingsService settingsService;
 
-    @GetMapping("/health")
-    public String health() {
-        return "Healthy";
+    @GetMapping("/user/{userId}")
+    public Settings get(@PathVariable Long userId) {
+        return settingsService.getSettingsByUserId(userId);
     }
 
 }

@@ -2,8 +2,8 @@ package com.kideya.photosettingsservice.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -13,8 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Settings {
-    private List<ServiceSettings> serviceSettings;
-    private ConstraintsSettings constraintsSettings;
     @Id
-    private int userId;
+    private Long userId;
+
+    private List<ServiceSettings> serviceSettings = new ArrayList<>();
+    private ConstraintsSettings constraintsSettings = new ConstraintsSettings();
 }

@@ -2,12 +2,14 @@ package com.kideya.photosettingsservice.model;
 
 import lombok.*;
 
+@Data
+@Builder
 @Setter
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class GroupSettings {
-    private long groupId;
+    private Long groupId;
     private String groupName;
 
     private boolean isActive;
