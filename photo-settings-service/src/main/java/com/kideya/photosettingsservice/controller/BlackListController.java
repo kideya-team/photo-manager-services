@@ -22,7 +22,9 @@ public class BlackListController {
     @PostMapping("user/{id}/blacklist/add/{bannedId}")
     public void addBannedUser(@PathVariable Long id, @PathVariable Long bannedId) {
         Settings settings = settingsService.getSettingsByUserId(id);
-        settings.getConstraintsSettings().getBannedUserIds().add(bannedId);
+        if (!settings.getConstraintsSettings().getBannedUserIds().contains(id)) {
+            settings.getConstraintsSettings().getBannedUserIds().add(bannedId);
+        }
         settingsService.update(settings);
     }
 
