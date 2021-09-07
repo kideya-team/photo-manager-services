@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
 public class GroupsCommand implements BotCommand {
@@ -16,7 +18,7 @@ public class GroupsCommand implements BotCommand {
     private EurekaClient eurekaClient;
 
     @Override
-    public void runCommand() {
+    public BotApiMethod<?> runCommand(Update update) {
         InstanceInfo instanceInfo = eurekaClient.getApplications().getInstancesByVirtualHostName("TEST").get(0);
 
         RestTemplate restTemplate = new RestTemplateBuilder().build();
@@ -27,6 +29,7 @@ public class GroupsCommand implements BotCommand {
 //        restTemplate.getForEntity("http://TEST:5555/test", String.class);
 //        Integer answer = restTemplate.getForObject("url", int.class);
 //        System.out.println(12);
+        return null;
     }
 
     @Override
