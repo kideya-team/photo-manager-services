@@ -1,4 +1,4 @@
-package com.kideya.photomanagerbot.botapi.commands.photoByDate;
+package com.kideya.photomanagerbot.botapi.commands.photo_by_date;
 
 import com.kideya.photomanagerbot.botapi.TelegramFacade;
 import com.kideya.photomanagerbot.botapi.bot_workers.Worker;
@@ -10,17 +10,12 @@ import com.kideya.photomanagerbot.services.TelegramApiSendingService;
 import com.kideya.photomanagerbot.services.TextService;
 import com.kideya.photomanagerbot.utils.DateUtils;
 import com.kideya.photomanagerbot.utils.Utils;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +50,6 @@ public class PhotoByDateCommand implements BotCommand, Worker {
 
             State state = userState.get(userId);
 
-
             if (state.equals(State.WAITING_FROM_DATE) || state.equals(State.WAITING_TO_DATE)) {
                 return parseDate(userId, update.getMessage().getText(), update);
             }
@@ -64,7 +58,7 @@ public class PhotoByDateCommand implements BotCommand, Worker {
                 Long chatId = Utils.getChatId(update);
                 telegramApiSendingService.sendTextMessage(chatId,
                         localeService.getTranslatedText("photo_by_date.date_request.request_was_sent_to_server"));
-                loadPhoto(chatId, requestString.get(chatId));
+               // loadPhoto(chatId, requestString.get(chatId));
                 freeCache(userId);
                 return new AnswerCallbackQuery();
             }
@@ -76,7 +70,7 @@ public class PhotoByDateCommand implements BotCommand, Worker {
 
     @Override
     public boolean isStillWorking(Integer userId) {
-        return true;
+        return userState.containsKey(userId);
     }
 
     @Override

@@ -13,7 +13,7 @@ public class Params {
 
     private String resourceTag;
     private String argName;
-    private Handler handler;
+    private String restPoint;
 
     private String arg;
 }
