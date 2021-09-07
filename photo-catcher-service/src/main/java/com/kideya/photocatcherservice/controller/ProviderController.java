@@ -36,8 +36,8 @@ public class ProviderController {
 
     @GetMapping("/{userId}/byDate")
     public List<Image> getByDate(@PathVariable Long userId,
-                                 @RequestParam(name="fromDate") @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) LocalDate fromDate,
-                                 @RequestParam(name="toDate", required=false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) LocalDate toDate) {
+                                 @RequestParam(name="to_date") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate fromDate,
+                                 @RequestParam(name="from_date", required=false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate toDate) {
         return imageService.getByDate(userId, fromDate, toDate);
     }
 }

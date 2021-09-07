@@ -31,6 +31,12 @@ public class GroupsService {
 
     public void addGroupToUser(Long userId, Long groupId) {
         Settings settings = settingsRepository.findByUserId(userId);
+
+        if (settings == null) {
+            settingsService.register(userId);
+            settings = settingsRepository.findByUserId(userId);
+        }
+
         List<Long> groups = settings.getConstraintsSettings().getGroupIds();
         if (!groups.contains(groupId)) {
             groups.add(groupId);

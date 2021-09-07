@@ -58,7 +58,7 @@ public class PhotoByDateCommand implements BotCommand, Worker {
                 Long chatId = Utils.getChatId(update);
                 telegramApiSendingService.sendTextMessage(chatId,
                         localeService.getTranslatedText("photo_by_date.date_request.request_was_sent_to_server"));
-               // loadPhoto(chatId, requestString.get(chatId));
+                loadPhoto(chatId, requestString.get(userId));
                 freeCache(userId);
                 return new AnswerCallbackQuery();
             }
@@ -79,7 +79,7 @@ public class PhotoByDateCommand implements BotCommand, Worker {
         Integer userId = Utils.getUserId(update);
 
         userState.put(userId, State.WAITING_FROM_DATE);
-        requestString.put(userId, "/api/photo_catcher/blabla");
+        requestString.put(userId, "/api/provider/" + userId + "/byDate");
 
         facade.changeBehaviour(userId, this);
         return textService.getMessage(Utils.getChatId(update), "photo_by_date.date_request.from");
@@ -104,7 +104,7 @@ public class PhotoByDateCommand implements BotCommand, Worker {
                 return textService.getMessage(userId, "photo_by_date.date_request.to");
 
             } else {
-                newRequest = requestString.get(userId) + "?from_date=" + date;
+                newRequest = requestString.get(userId) + "&from_date=" + date;
                 requestString.replace(userId, newRequest);
                 return doWork(update);
             }

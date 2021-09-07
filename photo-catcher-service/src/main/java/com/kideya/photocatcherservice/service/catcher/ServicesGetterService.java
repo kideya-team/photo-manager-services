@@ -48,7 +48,7 @@ public class ServicesGetterService {
 
     private List<Long> getBlackListOfUser(long userId) {
         return Arrays.asList(requestSenderService.sendGetRequest(SETTINGS_SERVICE_NAME,
-                "/api/settings/user/" + userId + "/blackList",
+                "/api/settings/user/" + userId + "/blacklist",
                 Long[].class));
     }
 
