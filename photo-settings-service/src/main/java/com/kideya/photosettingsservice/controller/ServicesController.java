@@ -17,12 +17,12 @@ public class ServicesController {
     private ServiceSettingsService service;
 
     @GetMapping("/user/{id}/services")
-    public List<ServiceSettings> addGroupToUser(@PathVariable Long id) {
+    public List<ServiceSettings> getServiceSettingsByUser(@PathVariable Long id) {
         return service.getServiceSettingsByUser(id);
     }
 
     @PostMapping("/user/{id}/services")
-    public void removeGroupFromUser(@PathVariable Long id, @RequestBody ServiceSettings serviceSettings) {
+    public void addServiceSettingsToUser(@PathVariable Long id, @RequestBody ServiceSettings serviceSettings) {
         service.addServiceSettingsToUser(id, serviceSettings);
     }
 }
