@@ -2,7 +2,7 @@ package com.kideya.photomanagerbot.botapi;
 
 import com.kideya.photomanagerbot.botapi.bot_workers.DefaultWorker;
 import com.kideya.photomanagerbot.botapi.bot_workers.Worker;
-import com.kideya.photomanagerbot.botapi.commands.chatCommands.SubscribeCommand;
+import com.kideya.photomanagerbot.botapi.commands.subscribe_processing.CommandProcessor;
 import com.kideya.photomanagerbot.botapi.image_processing.ImageProcessor;
 import com.kideya.photomanagerbot.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,9 @@ public class TelegramFacade {
 
     @Autowired
     private ImageProcessor imageProcessor;
+
+    @Autowired
+    private CommandProcessor commandProcessor;
 
     @Autowired
     private ApplicationContext context;
@@ -57,9 +60,7 @@ public class TelegramFacade {
     }
 
     private BotApiMethod<?> handleGroupMessage(Update update) {
-        if (update.getMessage().isCommand() && update.getMessage().equals("/subscribe")){
-            context.getBean(SubscribeCommand.class).runCommand(update);
-        }
+        commandProcessor.process(update);
         imageProcessor.processImage(update.getMessage());
         return new AnswerCallbackQuery();
     }
