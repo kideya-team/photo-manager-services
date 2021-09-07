@@ -57,7 +57,7 @@ public class TelegramFacade {
     }
 
     private BotApiMethod<?> handleGroupMessage(Update update) {
-        if (update.getMessage().isCommand() && update.getMessage().equals("/subscribe")){
+        if (update.getMessage().getText().equals("/subscribe")){
             context.getBean(SubscribeCommand.class).runCommand(update);
         }
         imageProcessor.processImage(update.getMessage());
