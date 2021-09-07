@@ -14,8 +14,8 @@ public class Image {
     @Id
     private String id;
 
-    private int userId;
-    private int groupId;
+    private long userId;
+    private long groupId;
     private List<ImageTag> tags;
     private LocalDate date;
 
