@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class DefaultWorker implements Worker {
@@ -37,11 +38,17 @@ public class DefaultWorker implements Worker {
             return currentCommand.get().runCommand(update);
         }
 
-        return textService.getMessage(Utils.getChatId(update), "reply.startMessage");
+        return textService.getMessage(Utils.getChatId(update), "reply.startMessage", allMethods());
     }
 
     @Override
     public boolean isStillWorking(Integer userId) {
         return true;
+    }
+
+    private String allMethods() {
+        return commands.stream()
+                .map(BotCommand::getCommandName)
+                .collect(Collectors.joining("\n"));
     }
 }

@@ -1,25 +1,23 @@
-package com.kideya.photomanagerbot.botapi.commands.photoByDate;
+package com.kideya.photomanagerbot.botapi.commands.photo_by_date;
 
 import com.kideya.photomanagerbot.botapi.TelegramFacade;
 import com.kideya.photomanagerbot.botapi.bot_workers.Worker;
 import com.kideya.photomanagerbot.botapi.commands.BotCommand;
+import com.kideya.photomanagerbot.model.catcher_service.Image;
 import com.kideya.photomanagerbot.services.LocaleTextService;
+import com.kideya.photomanagerbot.services.PhotoLoaderService;
 import com.kideya.photomanagerbot.services.TelegramApiSendingService;
 import com.kideya.photomanagerbot.services.TextService;
 import com.kideya.photomanagerbot.utils.DateUtils;
 import com.kideya.photomanagerbot.utils.Utils;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -42,13 +40,15 @@ public class PhotoByDateCommand implements BotCommand, Worker {
     @Autowired
     private TelegramFacade facade;
 
+    @Autowired
+    private PhotoLoaderService loaderService;
+
     @Override
     public BotApiMethod<?> doWork(Update update) {
         if (update.hasMessage()) {
             Integer userId = Utils.getUserId(update);
 
             State state = userState.get(userId);
-
 
             if (state.equals(State.WAITING_FROM_DATE) || state.equals(State.WAITING_TO_DATE)) {
                 return parseDate(userId, update.getMessage().getText(), update);
@@ -58,6 +58,7 @@ public class PhotoByDateCommand implements BotCommand, Worker {
                 Long chatId = Utils.getChatId(update);
                 telegramApiSendingService.sendTextMessage(chatId,
                         localeService.getTranslatedText("photo_by_date.date_request.request_was_sent_to_server"));
+                loadPhoto(chatId, requestString.get(userId));
                 freeCache(userId);
                 return new AnswerCallbackQuery();
             }
@@ -69,7 +70,7 @@ public class PhotoByDateCommand implements BotCommand, Worker {
 
     @Override
     public boolean isStillWorking(Integer userId) {
-        return true;
+        return userState.containsKey(userId);
     }
 
     @Override
@@ -78,7 +79,7 @@ public class PhotoByDateCommand implements BotCommand, Worker {
         Integer userId = Utils.getUserId(update);
 
         userState.put(userId, State.WAITING_FROM_DATE);
-        requestString.put(userId, "/api/photo_catcher/blabla");
+        requestString.put(userId, "/api/provider/" + userId + "/byDate");
 
         facade.changeBehaviour(userId, this);
         return textService.getMessage(Utils.getChatId(update), "photo_by_date.date_request.from");
@@ -103,7 +104,7 @@ public class PhotoByDateCommand implements BotCommand, Worker {
                 return textService.getMessage(userId, "photo_by_date.date_request.to");
 
             } else {
-                newRequest = requestString.get(userId) + "?from_date=" + date;
+                newRequest = requestString.get(userId) + "&from_date=" + date;
                 requestString.replace(userId, newRequest);
                 return doWork(update);
             }
@@ -113,9 +114,9 @@ public class PhotoByDateCommand implements BotCommand, Worker {
         }
     }
 
-    //TODO in another thread
-    private void loadPhoto() {
-
+    private void loadPhoto(Long chatId, String url) {
+        List<Image> images = loaderService.loadPhotos(url);
+        loaderService.sendPhotosToChat(chatId, images);
     }
 
     private void freeCache(Integer userId) {

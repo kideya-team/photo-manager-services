@@ -19,4 +19,8 @@ public class TextService {
         return new SendMessage(groupId, text);
     }
 
+    public SendMessage getMessage(long groupId, String resource, String additionalText) {
+        String text = localeTextService.getTranslatedText(resource);
+        return new SendMessage(groupId, text + "\n" + additionalText);
+    }
 }

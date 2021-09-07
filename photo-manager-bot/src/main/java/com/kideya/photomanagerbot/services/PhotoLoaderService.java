@@ -26,11 +26,16 @@ public class PhotoLoaderService {
         return Arrays.asList(Objects.requireNonNull(responce.getBody()));
     }
 
-    public void sendPhotosToChat(List<Image> images) {
+
+    public void sendPhotosToChat(Long chatId, List<Image> images) {
+
+        new Thread(() -> {
+            for (Image image : images) {
+                telegramApiSendingService.sendImage(chatId, image.getId());
+            }
+        }).start();
 
 
-//        for (Image image : images) {
-//            telegramApiSendingService.sendImage();
-//        }
+
     }
 }
