@@ -14,9 +14,7 @@ public class HddSaveController {
     @Autowired
     private SaveImageService saveImageService;
 
-    @PostMapping(path = "/save",
-                consumes = MediaType.APPLICATION_JSON_VALUE,
-                produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/save")
     public ResponseEntity<PhotoServiceInfo> saveImage(@RequestBody PhotoServiceInfo serviceInfo) {
         saveImageService.saveImage(serviceInfo.getImageId(), serviceInfo.getUserId(), serviceInfo.getParameters());
 
