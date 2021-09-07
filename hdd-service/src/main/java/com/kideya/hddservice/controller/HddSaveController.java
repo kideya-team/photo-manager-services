@@ -14,7 +14,7 @@ public class HddSaveController {
     @Autowired
     private SaveImageService saveImageService;
 
-    @PostMapping(path = "/save")
+    @PostMapping(path = "/photo")
     public ResponseEntity<PhotoServiceInfo> saveImage(@RequestBody PhotoServiceInfo serviceInfo) {
         saveImageService.saveImage(serviceInfo.getImageId(), serviceInfo.getUserId(), serviceInfo.getParameters());
 

@@ -40,7 +40,7 @@ public class ServicesGetterService {
 
     private List<Long> getUsersByGroupId(long groupId) {
         return Arrays.asList(requestSenderService.sendGetRequest(SETTINGS_SERVICE_NAME,
-                "/api/settings/group/" + groupId + "/users",
+                "/api/settings/group/" + groupId,
                 Long[].class));
 
 
