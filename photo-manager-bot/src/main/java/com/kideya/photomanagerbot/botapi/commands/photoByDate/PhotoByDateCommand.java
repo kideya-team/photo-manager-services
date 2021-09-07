@@ -3,7 +3,9 @@ package com.kideya.photomanagerbot.botapi.commands.photoByDate;
 import com.kideya.photomanagerbot.botapi.TelegramFacade;
 import com.kideya.photomanagerbot.botapi.bot_workers.Worker;
 import com.kideya.photomanagerbot.botapi.commands.BotCommand;
+import com.kideya.photomanagerbot.model.catcher_service.Image;
 import com.kideya.photomanagerbot.services.LocaleTextService;
+import com.kideya.photomanagerbot.services.PhotoLoaderService;
 import com.kideya.photomanagerbot.services.TelegramApiSendingService;
 import com.kideya.photomanagerbot.services.TextService;
 import com.kideya.photomanagerbot.utils.DateUtils;
@@ -20,6 +22,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -42,6 +45,9 @@ public class PhotoByDateCommand implements BotCommand, Worker {
     @Autowired
     private TelegramFacade facade;
 
+    @Autowired
+    private PhotoLoaderService loaderService;
+
     @Override
     public BotApiMethod<?> doWork(Update update) {
         if (update.hasMessage()) {
@@ -58,6 +64,7 @@ public class PhotoByDateCommand implements BotCommand, Worker {
                 Long chatId = Utils.getChatId(update);
                 telegramApiSendingService.sendTextMessage(chatId,
                         localeService.getTranslatedText("photo_by_date.date_request.request_was_sent_to_server"));
+                loadPhoto(chatId, requestString.get(chatId));
                 freeCache(userId);
                 return new AnswerCallbackQuery();
             }
@@ -113,9 +120,9 @@ public class PhotoByDateCommand implements BotCommand, Worker {
         }
     }
 
-    //TODO in another thread
-    private void loadPhoto() {
-
+    private void loadPhoto(Long chatId, String url) {
+        List<Image> images = loaderService.loadPhotos(url);
+        loaderService.sendPhotosToChat(chatId, images);
     }
 
     private void freeCache(Integer userId) {
