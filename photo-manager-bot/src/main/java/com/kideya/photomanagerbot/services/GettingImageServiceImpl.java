@@ -19,22 +19,15 @@ public class GettingImageServiceImpl implements GettingImageService{
     @Value("${telegrambot.apiurl}")
     private String telegramApiUrl;
 
+    private final RestTemplate restTemplate = new RestTemplate();
+
     @SneakyThrows
-    public byte[] getImageDataById(String imageId) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        String filePath = getFilePath(imageId, restTemplate);
-
-        return getRawImage(filePath, restTemplate);
-    }
-
-    private byte[] getRawImage(String filePath, RestTemplate restTemplate) {
-        ResponseEntity<byte[]> imageResponse = restTemplate.getForEntity(telegramApiUrl + "/file/bot" + photoTelegramBot.getBotToken() + "/" + filePath, byte[].class);
-        return imageResponse.getBody();
+    public String getImagePathById(String imageId) {
+        return getFilePath(imageId);
     }
 
     @SneakyThrows
-    private String getFilePath(String imageId, RestTemplate restTemplate) {
+    private String getFilePath(String imageId) {
         ResponseEntity<String> response = restTemplate.getForEntity(telegramApiUrl + "/bot" + photoTelegramBot.getBotToken() + "/getFile?file_id=" + imageId, String.class);
         if (response.getStatusCode() != HttpStatus.OK) {
             throw new IllegalStateException();
@@ -42,6 +35,7 @@ public class GettingImageServiceImpl implements GettingImageService{
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(response.getBody());
+
         return root.path("file_path").asText();
     }
 }
