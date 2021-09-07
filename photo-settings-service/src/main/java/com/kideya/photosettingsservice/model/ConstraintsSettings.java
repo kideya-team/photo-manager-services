@@ -12,6 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConstraintsSettings {
-    private List<GroupSettings> groupSettings = new ArrayList<>();
+    private List<Long> groupIds = new ArrayList<>();
     private List<Long> bannedUserIds = new ArrayList<>();
 }

@@ -21,7 +21,12 @@ public class GroupsController {
 
 	@PostMapping("/user/{id}/groups/{groupId}")
 	public void addGroupToUser(@PathVariable Long id, @PathVariable Long groupId) {
-		groupsService.subscribeUserToGroup(id, groupId);
+		groupsService.addGroupToUser(id, groupId);
+	}
+
+	@DeleteMapping("/user/{id}/groups/{groupId}")
+	public void removeGroupFromUser(@PathVariable Long id, @PathVariable Long groupId) {
+		groupsService.removeGroupFromUser(id, groupId);
 	}
 
 	@GetMapping("/group/{groupId}")

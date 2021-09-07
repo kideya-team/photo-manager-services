@@ -1,22 +1,16 @@
 package com.kideya.photosettingsservice.service;
 
 import com.kideya.photosettingsservice.model.ConstraintsSettings;
-import com.kideya.photosettingsservice.model.GroupSettings;
 import com.kideya.photosettingsservice.model.Settings;
 import com.kideya.photosettingsservice.repository.SettingsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,9 +25,7 @@ class GroupsServiceTest {
 
     private ConstraintsSettings createConstraintsSettingsByGroupIds(List<Long> groupIds) {
         return ConstraintsSettings.builder()
-                .groupSettings(groupIds.stream()
-                        .map(groupId -> GroupSettings.builder().groupId(groupId).build())
-                        .collect(Collectors.toList()))
+                .groupIds(groupIds)
                 .build();
     }
 

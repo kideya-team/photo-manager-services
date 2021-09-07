@@ -10,6 +10,5 @@ import java.util.List;
 @Builder
 public class GroupsDto {
 	private Long userId;
-	@Singular
 	private List<Long> groupIds;
 }
