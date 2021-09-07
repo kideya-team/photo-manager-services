@@ -9,14 +9,14 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class ByTagFinder implements PhotoFinder{
-    private final int userId;
+    private final List<Long> groupIds;
     private final String tagValue;
 
     @Override
     public List<Image> find(ImageRepository imageRepository) {
-        return imageRepository.findByUserId(userId).stream()
-                .filter(image -> image.getTags().stream()
-                        .anyMatch(tag -> tag.getValue().equals(tagValue)))
+        return groupIds.stream()
+                .flatMap(groupId -> imageRepository.findByGroupId(groupId).stream())
+                .filter(image -> image.getTags().stream().anyMatch(tag -> tag.getValue().equals(tagValue)))
                 .collect(Collectors.toList());
     }
 }

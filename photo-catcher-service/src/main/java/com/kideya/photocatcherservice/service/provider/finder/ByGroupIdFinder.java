@@ -9,13 +9,10 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class ByGroupIdFinder implements PhotoFinder {
-    private final int userId;
-    private final int groupId;
+    private final Long groupId;
 
     @Override
     public List<Image> find(ImageRepository imageRepository) {
-        return imageRepository.findByUserId(userId).stream()
-                .filter(image -> image.getGroupId() == groupId)
-                .collect(Collectors.toList());
+        return imageRepository.findByGroupId(groupId);
     }
 }
