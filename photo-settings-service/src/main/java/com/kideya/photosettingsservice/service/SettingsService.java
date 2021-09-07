@@ -27,4 +27,10 @@ public class SettingsService {
         settingsRepository.save(settings);
     }
 
+    public void register(Long userId) {
+        Settings settings = new Settings();
+        settings.setUserId(userId);
+        settingsRepository.save(settings);
+    }
+
 }

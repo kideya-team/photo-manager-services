@@ -6,7 +6,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 public class ServiceSettings {
-    private String serviceName; // change to enum?
+    private String serviceName;
     private boolean isActive;
     private String params;
 }
