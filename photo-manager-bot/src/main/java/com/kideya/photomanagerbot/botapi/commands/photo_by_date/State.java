@@ -1,6 +1,4 @@
-package com.kideya.photomanagerbot.botapi.commands.photoByDate;
-
-import lombok.Getter;
+package com.kideya.photomanagerbot.botapi.commands.photo_by_date;
 
 import java.util.Arrays;
 import java.util.Optional;
