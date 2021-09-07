@@ -25,12 +25,12 @@ public class GroupsService {
     }
 
     private List<Long> getGroupIdListByUserId(Long id) {
-        Settings settings = settingsRepository.findByUserId(id);
+        Settings settings = settingsService.getSettingsByUserId(id);
         return settings.getConstraintsSettings().getGroupIds();
     }
 
     public void addGroupToUser(Long userId, Long groupId) {
-        Settings settings = settingsRepository.findByUserId(userId);
+        Settings settings = settingsService.getSettingsByUserId(userId);
         List<Long> groups = settings.getConstraintsSettings().getGroupIds();
         if (!groups.contains(groupId)) {
             groups.add(groupId);
@@ -50,7 +50,7 @@ public class GroupsService {
     }
 
     public void removeGroupFromUser(Long userId, Long groupId) {
-        Settings settings = settingsRepository.findByUserId(userId);
+        Settings settings = settingsService.getSettingsByUserId(userId);
         List<Long> groups = settings.getConstraintsSettings().getGroupIds();
         groups.remove(groupId);
         settingsService.update(settings);
