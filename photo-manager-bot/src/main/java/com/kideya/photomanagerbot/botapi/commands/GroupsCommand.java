@@ -38,8 +38,8 @@ public class GroupsCommand implements BotCommand {
         String textMessage = localeService.getTranslatedText("groups.get_groups") + "\n" +
                 groupsDtoEntity.getBody().getGroupsString();
         telegramApiSendingService.sendTextMessage(chatId, textMessage);
-        return new AnswerCallbackQuery();
 
+        return new AnswerCallbackQuery();
     }
 
     @Override
