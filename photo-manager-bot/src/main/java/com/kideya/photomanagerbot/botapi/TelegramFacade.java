@@ -26,9 +26,6 @@ public class TelegramFacade {
     private ImageProcessor imageProcessor;
 
     @Autowired
-    private TextService textService;
-
-    @Autowired
     private ApplicationContext context;
 
     public BotApiMethod<?> handleUpdate(Update update) {
