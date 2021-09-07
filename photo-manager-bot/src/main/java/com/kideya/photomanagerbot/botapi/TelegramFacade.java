@@ -2,15 +2,14 @@ package com.kideya.photomanagerbot.botapi;
 
 import com.kideya.photomanagerbot.botapi.bot_workers.DefaultWorker;
 import com.kideya.photomanagerbot.botapi.bot_workers.Worker;
+import com.kideya.photomanagerbot.botapi.commands.chatCommands.SubscribeCommand;
 import com.kideya.photomanagerbot.botapi.image_processing.ImageProcessor;
-import com.kideya.photomanagerbot.services.TextService;
 import com.kideya.photomanagerbot.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -58,7 +57,9 @@ public class TelegramFacade {
     }
 
     private BotApiMethod<?> handleGroupMessage(Update update) {
-
+        if (update.getMessage().isCommand() && update.getMessage().equals("/subscribe")){
+            context.getBean(SubscribeCommand.class).runCommand(update);
+        }
         imageProcessor.processImage(update.getMessage());
         return new AnswerCallbackQuery();
     }
