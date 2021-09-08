@@ -24,12 +24,12 @@ public class ProviderController {
         return imageRepository.findAll();
     }
 
-    @GetMapping("/{userId}/byTag")
+    @GetMapping("/{userId}/photoByTag")
     public List<Image> getByTag(@PathVariable Long userId, @RequestParam(name="tag") String tag) {
         return imageService.getByTag(userId, tag);
     }
 
-    @GetMapping("/{userId}/byGroupId")
+    @GetMapping("/{userId}/photoByGroup")
     public List<Image> getByGroupId(@PathVariable Long userId, @RequestParam(name="groupId") Long groupId) {
         return imageService.getByGroupId(userId, groupId);
     }

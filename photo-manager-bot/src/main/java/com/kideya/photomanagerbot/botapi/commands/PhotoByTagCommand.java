@@ -8,9 +8,9 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
-public class PhotoByGroupCommand implements BotCommand {
+public class PhotoByTagCommand implements BotCommand {
 
-    private static final String NAME = "/photoByGroup";
+    private static final String NAME = "/photoByTag";
 
     @Autowired
     private SimpleFlowWorker simpleFlowWorker;
@@ -20,8 +20,8 @@ public class PhotoByGroupCommand implements BotCommand {
 
         Params params = Params.builder()
                 .restPoint(NAME)
-                .resourceTag("photo_by_group")
-                .argName("groupId").build();
+                .resourceTag("photo_by_tag")
+                .argName("tag").build();
 
         return simpleFlowWorker.registerCommand(update, params);
     }

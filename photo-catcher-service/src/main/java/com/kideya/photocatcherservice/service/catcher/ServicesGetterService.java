@@ -26,7 +26,7 @@ public class ServicesGetterService {
         List<Long> users = getUsersByGroupId(imageGgroupId);
         for (var user : users) {
             List<Long> blackListOfUser = getBlackListOfUser(user);
-            if (user == imageOwnerId || blackListOfUser.contains(imageOwnerId)) {
+            if (blackListOfUser.contains(imageOwnerId)) {
                 continue;
             }
 

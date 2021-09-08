@@ -1,9 +1,11 @@
 package com.kideya.photomanagerbot.botapi.commands.set_service.buttons_headlers;
 
+import com.kideya.photomanagerbot.services.SendingMessageService;
 import com.kideya.photomanagerbot.utils.KeyboardBuilder;
 import com.kideya.photomanagerbot.model.settings_service.ServiceSettings;
 import com.kideya.photomanagerbot.services.LocaleTextService;
 import com.kideya.photomanagerbot.services.TextService;
+import com.kideya.photomanagerbot.utils.MicroservicesNames;
 import com.kideya.photomanagerbot.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,9 +33,12 @@ public class HddButtonHandler implements ButtonPressHandler {
     @Autowired
     private LocaleTextService localeTextService;
 
+    @Autowired
+    private SendingMessageService sendingMessageService;
+
     @Override
     public String getName() {
-        return "hdd";
+        return "Hdd";
     }
 
     @Override
@@ -87,7 +92,13 @@ public class HddButtonHandler implements ButtonPressHandler {
     private SendMessage statusButtonHandle(Update update, ServiceSettings settings) {
 
         settings.setActive(!settings.isActive());
-        //send post
+
+        sendingMessageService.sendPost(
+                MicroservicesNames.SETTINGS_SERVICE_NAME,
+                "/api/settings/user/" + Utils.getUserId(update) + "/services",
+                settings,
+                ServiceSettings.class);
+
         currentUsers.remove(Utils.getUserId(update));
         return textService.getMessage(Utils.getChatId(update), "button.hdd_handler.confirm");
 
