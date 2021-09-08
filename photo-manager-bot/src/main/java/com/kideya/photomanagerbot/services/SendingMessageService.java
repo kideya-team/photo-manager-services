@@ -25,6 +25,12 @@ public class SendingMessageService {
         return result;
     }
 
+    public void sendDelete(String serviceName, String url, Object object) {
+        String service_url = prepareUrl(serviceName, url);
+
+        restTemplate.delete(service_url, object);
+    }
+
     private String prepareUrl(String serviceName, String url) {
         InstanceInfo instanceInfo = eurekaClient.getApplications().getInstancesByVirtualHostName(serviceName).get(0);
         return  "http://" + instanceInfo.getHostName() +":"+instanceInfo.getPort() + url;

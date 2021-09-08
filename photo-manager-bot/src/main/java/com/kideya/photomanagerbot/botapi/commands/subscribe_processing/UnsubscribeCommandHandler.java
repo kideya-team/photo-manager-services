@@ -1,6 +1,5 @@
-package com.kideya.photomanagerbot.botapi.commands.chatCommands;
+package com.kideya.photomanagerbot.botapi.commands.subscribe_processing;
 
-import com.kideya.photomanagerbot.botapi.commands.BotCommand;
 import com.kideya.photomanagerbot.services.LocaleTextService;
 import com.kideya.photomanagerbot.services.SendingMessageService;
 import com.kideya.photomanagerbot.services.TelegramApiSendingService;
@@ -13,9 +12,9 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
-public class SubscribeCommand {
+public class UnsubscribeCommandHandler implements CommandHandler{
 
-	private final String name = "/subscribe";
+	private static final String NAME = "/unsubscribe";
 
 	@Autowired
 	private SendingMessageService sendingMessageService;
@@ -26,18 +25,20 @@ public class SubscribeCommand {
 	@Autowired
 	private LocaleTextService localeService;
 
-	public BotApiMethod<?> runCommand(Update update) {
+	@Override
+	public BotApiMethod<?> handle(Update update) {
 		Integer userId = Utils.getUserId(update);
 		Long chatId = Utils.getChatId(update);
 		String subscribeUrl = "/api/settings/user/"+userId+"/groups/"+chatId;
-		sendingMessageService.sendPost(MicroservicesNames.SETTINGS_SERVICE_NAME,subscribeUrl,"", String.class);
+		sendingMessageService.sendDelete(MicroservicesNames.SETTINGS_SERVICE_NAME,subscribeUrl,"");
 
-		String textMessage = localeService.getTranslatedText("groups.subscribed_successfully") + chatId;
+		String textMessage = localeService.getTranslatedText("groups.unsubscribed_successfully") + chatId;
 		telegramApiSendingService.sendTextMessage(userId.longValue(), textMessage);
 		return new AnswerCallbackQuery();
 	}
 
-	public String getCommandName() {
-		return name;
+	@Override
+	public String getMyCommand() {
+		return NAME;
 	}
 }
