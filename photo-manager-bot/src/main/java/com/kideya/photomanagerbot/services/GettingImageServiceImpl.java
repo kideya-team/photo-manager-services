@@ -36,6 +36,6 @@ public class GettingImageServiceImpl implements GettingImageService{
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(response.getBody());
 
-        return root.path("file_path").asText();
+        return telegramApiUrl + "/file/bot" + photoTelegramBot.getBotToken() + "/" + root.path("result").path("file_path").asText();
     }
 }
