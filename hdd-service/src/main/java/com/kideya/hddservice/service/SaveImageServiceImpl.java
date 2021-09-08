@@ -8,14 +8,20 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class SaveImageServiceImpl implements SaveImageService {
     @Autowired
     private GettingImageInfoService gettingImageInfoService;
 
-    @Value("${imageservice.tempfolder}")
+    @Value("${imageservice.tempFolder}")
     private String tempFolder;
+
+    @Value("${imageservice.folderPrefix}")
+    private String folderPrefix;
 
     @Override
     public void saveImage(String imageId, Long userId, String parameters) {
@@ -24,7 +30,13 @@ public class SaveImageServiceImpl implements SaveImageService {
             throw new IllegalStateException();
         }
 
-        downloadImage(imagePath, createFile(userId, imageId));
+
+        try {
+            File newImage = createFile(userId, imageId);
+            downloadImage(imagePath, newImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @SneakyThrows
@@ -44,7 +56,15 @@ public class SaveImageServiceImpl implements SaveImageService {
         }
     }
 
+    @SneakyThrows
     private File createFile(Long userId, String imageId) {
-        return new File(tempFolder + "/" + userId + "/" + imageId + "." + FileFormat.JPG);
+        String userFolderPath = tempFolder + "\\" + folderPrefix + userId;
+        Files.createDirectories(Paths.get(userFolderPath));
+
+        String filePath = userFolderPath + "\\" + imageId + "." + FileFormat.JPG;
+
+        File newFile = new File(filePath);
+        newFile.createNewFile();
+        return newFile;
     }
 }
