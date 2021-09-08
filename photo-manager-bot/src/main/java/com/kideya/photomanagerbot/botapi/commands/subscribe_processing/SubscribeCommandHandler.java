@@ -12,34 +12,34 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
-public class SubscribeCommandHandler implements CommandHandler{
+public class SubscribeCommandHandler implements CommandHandler {
 
-	private static final String NAME = "/subscribe";
+    private static final String NAME = "/subscribe";
 
-	@Autowired
-	private SendingMessageService sendingMessageService;
+    @Autowired
+    private SendingMessageService sendingMessageService;
 
-	@Autowired
-	private TelegramApiSendingService telegramApiSendingService;
+    @Autowired
+    private TelegramApiSendingService telegramApiSendingService;
 
-	@Autowired
-	private LocaleTextService localeService;
+    @Autowired
+    private LocaleTextService localeService;
 
-	@Override
-	public BotApiMethod<?> handle(Update update) {
-		Integer userId = Utils.getUserId(update);
-		Long chatId = Utils.getChatId(update);
-		String subscribeUrl = "/api/settings/user/"+userId+"/groups/"+chatId;
-		sendingMessageService.sendPost(MicroservicesNames.SETTINGS_SERVICE_NAME,subscribeUrl,"");
+    @Override
+    public BotApiMethod<?> handle(Update update) {
+        Integer userId = Utils.getUserId(update);
+        Long chatId = Utils.getChatId(update);
+        String subscribeUrl = "/api/settings/user/" + userId + "/groups/" + chatId;
+        sendingMessageService.sendPost(MicroservicesNames.SETTINGS_SERVICE_NAME, subscribeUrl, "", Object.class);
 
-		String textMessage = localeService.getTranslatedText("groups.subscribed_successfully") + chatId;
-		telegramApiSendingService.sendTextMessage(userId.longValue(), textMessage);
-		return new AnswerCallbackQuery();
-	}
+        String textMessage = localeService.getTranslatedText("groups.subscribed_successfully") + chatId;
+        telegramApiSendingService.sendTextMessage(userId.longValue(), textMessage);
+        return new AnswerCallbackQuery();
+    }
 
-	@Override
-	public String getMyCommand() {
-		return NAME;
-	}
+    @Override
+    public String getMyCommand() {
+        return NAME;
+    }
 
 }

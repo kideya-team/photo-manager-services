@@ -2,12 +2,14 @@ package com.kideya.photomanagerbot.botapi.commands.subscribe_processing;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Map;
 
+@Component
 public class CommandProcessorImpl implements CommandProcessor {
 
 	@Autowired
