@@ -30,7 +30,7 @@ public class GroupsCommand implements BotCommand {
     @Override
     public BotApiMethod<?> runCommand(Update update) {
         Integer userId = Utils.getUserId(update);
-        String groupsUrl = "/api/settings/users/"+userId+"/groups";
+        String groupsUrl = "/api/settings/user/"+userId+"/groups";
         ResponseEntity<GroupsDto> groupsDtoEntity = sendingMessageService.sendGet(MicroservicesNames.SETTINGS_SERVICE_NAME,
                 groupsUrl, GroupsDto.class);
 
