@@ -13,7 +13,7 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
-public class SubscribeCommand implements BotCommand {
+public class SubscribeCommand {
 
 	private final String name = "/subscribe";
 
@@ -26,7 +26,6 @@ public class SubscribeCommand implements BotCommand {
 	@Autowired
 	private LocaleTextService localeService;
 
-	@Override
 	public BotApiMethod<?> runCommand(Update update) {
 		Integer userId = Utils.getUserId(update);
 		Long chatId = Utils.getChatId(update);
@@ -38,7 +37,6 @@ public class SubscribeCommand implements BotCommand {
 		return new AnswerCallbackQuery();
 	}
 
-	@Override
 	public String getCommandName() {
 		return name;
 	}

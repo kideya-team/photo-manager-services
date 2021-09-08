@@ -21,7 +21,7 @@ import java.util.Map;
 @Component
 public class SimpleFlowWorker implements Worker {
 
-    private static final String BASE_URL = "http:/api/photocatcher/";
+    private static final String BASE_URL = "/api/provider/";
 
     private final Map<Integer, Params> params = new HashMap<>();
 
@@ -43,7 +43,7 @@ public class SimpleFlowWorker implements Worker {
             String text = update.getMessage().getText();
             params.get(userId).setArg(text);
 
-            //sendPhotos(userId, chatId);
+            sendPhotos(userId, chatId);
             String tag = params.get(userId).getResourceTag();
             params.remove(userId);
             return textService.getMessage(chatId,  tag + ".request_was_sent_to_server");
@@ -71,6 +71,7 @@ public class SimpleFlowWorker implements Worker {
         Params userParams = this.params.get(userId);
 
         List<Image> images = loaderService.loadPhotos(BASE_URL
+                + userId
                 + userParams.getRestPoint()
                 + "?" + userParams.getArgName()
                 + "=" + userParams.getArg());
