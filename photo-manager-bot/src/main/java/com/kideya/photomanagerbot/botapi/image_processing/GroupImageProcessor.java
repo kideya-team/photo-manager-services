@@ -25,7 +25,7 @@ public class GroupImageProcessor implements ImageProcessor{
         if (photo != null) {
 
             Image image = prepareImage(message, message.getChatId(), message.getFrom().getId());
-            sendingMessageService.sendPost(MicroservicesNames.CATCHER_SERVICE_NAME, "/api/catcher/photo", image);
+            sendingMessageService.sendPost(MicroservicesNames.CATCHER_SERVICE_NAME, "/api/catcher/photo", image, String.class);
 
         }
         return new AnswerCallbackQuery();

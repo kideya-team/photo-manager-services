@@ -2,14 +2,19 @@ package com.kideya.photomanagerbot.botapi.commands.set_service;
 
 import com.kideya.photomanagerbot.botapi.TelegramFacade;
 import com.kideya.photomanagerbot.botapi.bot_workers.Worker;
+import com.kideya.photomanagerbot.botapi.bot_workers.simple_flow.handlers.Handler;
 import com.kideya.photomanagerbot.botapi.commands.BotCommand;
 import com.kideya.photomanagerbot.botapi.commands.set_service.buttons_headlers.ButtonPressHandler;
+import com.kideya.photomanagerbot.model.settings_service.Settings;
+import com.kideya.photomanagerbot.services.SendingMessageService;
 import com.kideya.photomanagerbot.utils.KeyboardBuilder;
 import com.kideya.photomanagerbot.model.settings_service.ServiceSettings;
 import com.kideya.photomanagerbot.services.LocaleTextService;
 import com.kideya.photomanagerbot.services.TextService;
+import com.kideya.photomanagerbot.utils.MicroservicesNames;
 import com.kideya.photomanagerbot.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -17,10 +22,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class SetServicesCommand implements BotCommand, Worker {
@@ -39,6 +41,11 @@ public class SetServicesCommand implements BotCommand, Worker {
     @Autowired
     private TelegramFacade facade;
 
+    @Autowired
+    private SendingMessageService sendingMessageService;
+
+    private String btnName;
+
     private final Map<Integer, List<ServiceSettings>> cache = new HashMap<>();
     private final Map<Integer, ButtonPressHandler> currentHandler = new HashMap<>();
 
@@ -46,28 +53,8 @@ public class SetServicesCommand implements BotCommand, Worker {
     public BotApiMethod<?> runCommand(Update update) {
 
         Integer userId = update.getMessage().getFrom().getId();
-
-        //load data
-
-        //-------------
-        List<ServiceSettings> settings = new ArrayList<>();
-        ServiceSettings serviceSetting = new ServiceSettings();
-        serviceSetting.setActive(true);
-        serviceSetting.setServiceName("hdd");
-        settings.add(serviceSetting);
-
-        ServiceSettings serviceSetting1 = new ServiceSettings();
-        serviceSetting1.setActive(false);
-        serviceSetting1.setServiceName("disk");
-        settings.add(serviceSetting1);
-        //-------------
-
-        cache.put(userId, settings);
         facade.changeBehaviour(userId, this);
-
-
-
-        return sendStartMessage(update, settings);
+        return sendStartMessage(update);
     }
 
     @Override
@@ -79,17 +66,33 @@ public class SetServicesCommand implements BotCommand, Worker {
 
         KeyboardBuilder keyboardBuilder = new KeyboardBuilder();
 
-        for (ServiceSettings setting : settings) {
+        for (SupportedServices service : SupportedServices.values()) {
 
-            String buttonName = setting.getServiceName();
+            String buttonName = service.getName();
 
-            if (setting.isActive()) {
-                buttonName += " - " + localeTextService.getTranslatedText("button.status");
+            ServiceSettings userService = getSettingByName(buttonName, settings);
+
+            if (userService != null) {
+                if (userService.isActive()) {
+                    buttonName += " - " + localeTextService.getTranslatedText("button.status.enabled");
+                } else {
+                    buttonName += " - " + localeTextService.getTranslatedText("button.status.disabled");
+                }
+                keyboardBuilder.addButton(buttonName, service.getName());
+            } else {
+                buttonName += " - " + localeTextService.getTranslatedText("button.status.unsupported");
+                keyboardBuilder.addButton(buttonName, "default " + buttonName);
             }
-            keyboardBuilder.addButton(buttonName, setting.getServiceName());
         }
 
+
         return keyboardBuilder.addButton(localeTextService.getTranslatedText("button.back"), "back").build();
+    }
+
+    private ServiceSettings getSettingByName(String name, List<ServiceSettings> settings) {
+        return settings.stream()
+                .filter(setting -> setting.getServiceName().equals(name))
+                .findFirst().orElse(null);
     }
 
     @Override
@@ -99,12 +102,12 @@ public class SetServicesCommand implements BotCommand, Worker {
 
         if (currentHandler.containsKey(userId)) {
             ButtonPressHandler handler = currentHandler.get(userId);
-            BotApiMethod result = handler.pressHandle(update, getSettings(settings, handler.getName()));
+
             if (handler.isFinished(userId)) {
                 currentHandler.remove(userId);
-                return sendStartMessage(update, settings);
+                return sendStartMessage(update);
             } else {
-                return result;
+                return handler.pressHandle(update, getSettings(settings, handler.getName()));
             }
         }
 
@@ -119,10 +122,21 @@ public class SetServicesCommand implements BotCommand, Worker {
                 }
             }
 
+            if (handlerName.startsWith("default")) {
+                btnName = handlerName.split(" ")[1];
+                ButtonPressHandler handler = findHandlerByName("default");
+                currentHandler.put(userId, handler);
+                return handler.pressHandle(update, prepareNewSettings(btnName));
+            }
+
             throw new IllegalArgumentException();
         }
 
         return new AnswerCallbackQuery();
+    }
+
+    private ButtonPressHandler findHandlerByName(String name) {
+        return handlers.stream().filter(n -> n.getName().equals(name)).findFirst().orElse(null);
     }
 
     @Override
@@ -152,10 +166,34 @@ public class SetServicesCommand implements BotCommand, Worker {
     }
 
     private ServiceSettings getSettings(List<ServiceSettings> settings, String serviceName) {
-        return settings.stream().filter(setting -> setting.getServiceName().equals(serviceName)).findFirst().orElse(new ServiceSettings());
+        return settings.stream().filter(setting -> setting.getServiceName().equals(serviceName)).findFirst().orElse(null);
     }
 
-    private SendMessage sendStartMessage(Update update, List<ServiceSettings> settings) {
+    private ServiceSettings prepareNewSettings(String btnName) {
+        ServiceSettings settings = new ServiceSettings();
+
+        settings.setActive(false);
+        settings.setServiceName(btnName);
+        settings.setParams("");
+
+        return settings;
+    }
+
+    private SendMessage sendStartMessage(Update update) {
+
+        Integer userId = Utils.getUserId(update);
+
+        Settings response = sendingMessageService
+                .sendGet(MicroservicesNames.SETTINGS_SERVICE_NAME, "/api/settings/user/" + userId, Settings.class).getBody();
+
+        List<ServiceSettings> settings = new ArrayList<>();
+
+        if (response != null) {
+            settings = response.getServiceSettings();
+        }
+
+        cache.put(userId, settings);
+
         SendMessage message =
                 textService.getMessage(Utils.getChatId(update), "reply.setGroupHeader");
 

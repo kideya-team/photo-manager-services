@@ -15,12 +15,14 @@ public class SendingMessageService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public void sendPost(String serviceName, String url, Object object) {
+    public <T> ResponseEntity<T> sendPost(String serviceName, String url, Object object, Class<T> responseClass) {
         String service_url = prepareUrl(serviceName, url);
 
-        ResponseEntity<String> result = restTemplate.postForEntity(service_url, object, String.class);
+        ResponseEntity<T> result = restTemplate.postForEntity(service_url, object, responseClass);
 
         System.out.println(result.getStatusCode());
+
+        return result;
     }
 
     private String prepareUrl(String serviceName, String url) {

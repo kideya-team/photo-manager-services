@@ -31,7 +31,7 @@ public class SubscribeCommand implements BotCommand {
 		Integer userId = Utils.getUserId(update);
 		Long chatId = Utils.getChatId(update);
 		String subscribeUrl = "/api/settings/user/"+userId+"/groups/"+chatId;
-		sendingMessageService.sendPost(MicroservicesNames.SETTINGS_SERVICE_NAME,subscribeUrl,"");
+		sendingMessageService.sendPost(MicroservicesNames.SETTINGS_SERVICE_NAME,subscribeUrl,"", String.class);
 
 		String textMessage = localeService.getTranslatedText("groups.subscribed_successfully") + chatId;
 		telegramApiSendingService.sendTextMessage(userId.longValue(), textMessage);

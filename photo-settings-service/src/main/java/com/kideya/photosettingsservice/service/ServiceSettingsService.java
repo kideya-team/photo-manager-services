@@ -19,6 +19,12 @@ public class ServiceSettingsService {
 
     public void addServiceSettingsToUser(Long userId, ServiceSettings serviceSettings) {
         Settings settings = settingsService.getSettingsByUserId(userId);
+
+        if (settings == null) {
+            settingsService.register(userId);
+            settings = settingsRepository.findByUserId(userId);
+        }
+
         List<ServiceSettings> serviceSettingsList = settings.getServiceSettings().stream()
                 .filter(ss -> !ss.getServiceName().equals(serviceSettings.getServiceName()))
                 .collect(Collectors.toList());
